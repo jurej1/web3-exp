@@ -1,3 +1,9 @@
+import { SendBox } from "@/components/send-box/SendBox";
+
 export default function Home() {
-  return <h1>Home Page</h1>;
+  return (
+    <div className="flex h-dvh w-full items-center justify-center">
+      <SendBox />
+    </div>
+  );
 }
