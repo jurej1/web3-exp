@@ -12,9 +12,5 @@ export const config = getDefaultConfig({
   appName: "Web 3Expo",
   projectId: projectId,
   chains: [mainnet, bsc],
-  transports: {
-    [mainnet.id]: http(),
-    [bsc.id]: http(),
-  },
   ssr: true,
 });

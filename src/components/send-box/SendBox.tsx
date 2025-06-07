@@ -16,25 +16,31 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useSendTransaction } from "wagmi";
 import { useUserBalance } from "@/hooks/web3/useUserBalance";
 import { Button } from "../ui/button";
+import { Address, parseEther } from "viem";
 
 export function SendBox() {
   const { address } = useAccount();
+
   const balanceResult = useUserBalance();
 
-  console.log("RESULT", balanceResult.data);
+  const { data: hash, sendTransaction } = useSendTransaction();
 
   const form = useForm<SendTokensSchemaType>({
     resolver: zodResolver(SendTokensSchema),
     defaultValues: {
       receiver: "",
+      value: "",
     },
   });
 
   function onSubmit(values: SendTokensSchemaType) {
-    console.log(values);
+    sendTransaction({
+      to: values.receiver as Address,
+      value: parseEther(values.value),
+    });
   }
 
   return (
@@ -78,6 +84,14 @@ export function SendBox() {
                   <Input
                     placeholder={`0.00 ${balanceResult.data?.symbol || ""}`}
                     {...field}
+                    onChange={(e) => {
+                      // Allow only numbers and a single decimal point
+                      const value = e.target.value;
+                      const regex = /^[0-9]*\.?[0-9]*$/;
+                      if (value === "" || regex.test(value)) {
+                        field.onChange(value);
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
